@@ -1,15 +1,52 @@
 package com.dangch.orderservice;
 
+import io.restassured.RestAssured;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
+import org.testcontainers.containers.MySQLContainer;
 
-@Import(TestcontainersConfiguration.class)
-@SpringBootTest
+import static org.hamcrest.MatcherAssert.assertThat;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OrderServiceApplicationTests {
 
-    @Test
-    void contextLoads() {
+    static {
+        MySQLContainer mysqlContainer = new MySQLContainer("mysql:8.3.0");
+    }
+    @LocalServerPort
+    private int port;
+
+    @BeforeEach
+    void setUp() {
+        RestAssured.baseURI= "http://localhost";
+        RestAssured.port = port; // Assuming the application runs on port 8080
+        // This method can be used to set up any preconditions or mock data before each test
     }
 
-}
+    @Test
+    void shouldPlaceOrder() {
+        String orderRequestJson = """
+                {
+                     "skuCode":"iphone_15",
+                     "price":"1000",
+                     "quantity":"1"
+                 }
+                """;
+        var response = RestAssured.given()
+                .contentType("application/json")
+                .body(orderRequestJson)
+                .when()
+                .post("/api/orders")
+                .then()
+                .statusCode(201)
+                .extract()
+                .body().asString();// Asserting that the order was placed successfully with a 201 Created status
+
+        // You can add further assertions here to verify the response or the state of the system
+        assertThat(response, Matchers.is("Order placed successfully"));
+            }
+    }
