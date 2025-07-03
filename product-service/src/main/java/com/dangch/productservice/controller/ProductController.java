@@ -22,6 +22,11 @@ public class ProductController {
         productService.createProduct(productRequest);
     }
 
+    @GetMapping(path = "/test")
+    public String test(){
+        return "hello";
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ProductResponse> getAllProducts(){
