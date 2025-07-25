@@ -12,7 +12,7 @@ services:
     volumes:
       - ./docker/mongodb/data:/data/db
   mysql:
-    image: mysql:8.3.0
+    image: mysql:8.0.32
     container_name: mysql
     ports:
       - "3306:3306"
