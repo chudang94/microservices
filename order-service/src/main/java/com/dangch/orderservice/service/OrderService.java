@@ -7,6 +7,7 @@ import com.dangch.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,6 +36,13 @@ public class OrderService {
             throw new RuntimeException("Product is not in stock: " + orderRequest.skuCode());
         }
 
+    }
+
+
+    public List<Order> getAllOrders(){
+        List<Order> orders = orderRepository.findAll();
+
+        return orders;
     }
 
 }
