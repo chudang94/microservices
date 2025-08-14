@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mysql
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: mysql:8.0.32
+          name: mysql
+          ports:
+            - containerPort: 3306
+          evn:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "12345678"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mysql
+  name: mysql
+spec:
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    app: mysql

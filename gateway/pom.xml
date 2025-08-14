@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2025.0.0</spring-cloud.version>
+		<dockerPassword>${dockerPassword}</dockerPassword>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -96,6 +97,33 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>chudang94/${project.artifactId}</name>
+						<builder>paketobuildpacks/builder-noble-java-tiny:latest</builder>
+						<publish>true</publish>
+						<build>
+							<ports>
+								<port>8080</port>
+							</ports>
+							<env>
+								<MY_VARIABLE>plugin_value</MY_VARIABLE>
+							</env>
+						</build>
+					</image>
+					<docker>
+						<publishRegistry>
+							<username>chudang94</username>
+							<password>${dockerPassword}</password>
+						</publishRegistry>
+					</docker>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
